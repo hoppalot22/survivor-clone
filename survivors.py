@@ -93,8 +93,33 @@ class Map:
         self.origin = Vector2(width/2,height/2)
         self.width = width
         self.height = height
-        self.grid = np.zeros([width, height])
+        self.grid = [[Cell(self,Vector2(0,0))]]
+        for i in range(width-1):
+            self.addCellRow()
+        for j in range(height-1):
+            self.addCellColumn()
+            
         self.camera = Camera(self)
+        
+    def addCellRow(self):
+        self.grid.append([Cell(self, Vector2(i, len(self.grid))) for i in range(len(self.grid[0]))])
+            
+        
+        
+    def addCellColumn(self):
+        for j, row in enumerate(self.grid):
+            row.append(Cell(self, Vector2(len(row), j)))
+            
+            
+            
+class Cell:
+    def __init__(self, map, position):
+        self.map = map
+        self.sprite = None
+        self.position = position
+        
+    def setSprite(self, sprite):
+        self.sprite = sprite        
         
 
 class Camera:
@@ -106,7 +131,10 @@ class Camera:
         self.position = self.map.origin
         self.zoom = Vector2(1,1)
         
-        self.viewGrid = self.map.grid[origin.x - self.defaultCameraFOV.x, origin.x + self.defaultCameraFOV.x][origin.y - self.defaultCameraFOV.y, origin.y + self.defaultCameraFOV.y]
+        
+        self.viewGrid = self.map.grid[int(self.map.origin.x - self.defaultCameraFOV.x/2):int(self.map.origin.x + self.defaultCameraFOV.x/2)][int(self.map.origin.y - self.defaultCameraFOV.y/2):int(self.map.origin.y + self.defaultCameraFOV.y/2)]
+        print(int(self.map.origin.x - self.defaultCameraFOV.x/2), int(self.map.origin.x + self.defaultCameraFOV.x/2))
+        print(self.map.grid[40:60][5])
         
         self.display = pg.display
         self.display.set_mode((1000,600))
@@ -159,8 +187,12 @@ def Main():
     print(myPlayer.ID)
     print(myPlayer.collisionBox)
     print(myPlayer.sprite)
-    print(mySession.map.camera.zoom)
-    print(mySession.map.grid)
+    print(mySession.map.camera.viewGrid)
+    for j in range(len(mySession.map.camera.viewGrid)):
+        print([mySession.map.camera.viewGrid[j][i].position for i in range(len(mySession.map.camera.viewGrid[j]))])
+    # for i, row in enumerate(mySession.map.grid):    
+        # for j, col in enumerate(row):
+            # print(mySession.map.grid[i][j].position)
     
 
     fps = 60
