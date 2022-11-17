@@ -98,7 +98,7 @@ class Map:
             self.addCellRow()
         for j in range(height-1):
             self.addCellColumn()
-            
+        self.grid = np.array(self.grid)  
         self.camera = Camera(self)
         
     def addCellRow(self):
@@ -132,9 +132,7 @@ class Camera:
         self.zoom = Vector2(1,1)
         
         
-        self.viewGrid = self.map.grid[int(self.map.origin.x - self.defaultCameraFOV.x/2):int(self.map.origin.x + self.defaultCameraFOV.x/2)][int(self.map.origin.y - self.defaultCameraFOV.y/2):int(self.map.origin.y + self.defaultCameraFOV.y/2)]
-        print(int(self.map.origin.x - self.defaultCameraFOV.x/2), int(self.map.origin.x + self.defaultCameraFOV.x/2))
-        print(self.map.grid[40:60][5])
+        self.viewGrid = self.map.grid[int(self.map.origin.x - self.defaultCameraFOV.x/2):int(self.map.origin.x + self.defaultCameraFOV.x/2), int(self.map.origin.y - self.defaultCameraFOV.y/2):int(self.map.origin.y + self.defaultCameraFOV.y/2)]
         
         self.display = pg.display
         self.display.set_mode((1000,600))
